@@ -38,7 +38,9 @@ def draw_bar_plot():
 
     # draw and label the bar plot
     fig, ax = plt.subplots(figsize=(12, 6))
-    df_bar.plot.bar(xlabel='Years', ylabel='Average Page Views', ax=ax, label='Months')
+    df_bar.plot.bar(ax=ax)
+    ax.set_xlabel('Years')
+    ax.set_ylabel('Average Page Views')
     ax.legend(title='Months')
     
     # Save image and return fig (don't change this part)
