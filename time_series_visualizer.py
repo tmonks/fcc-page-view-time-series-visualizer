@@ -5,14 +5,16 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 # Import data
-df = pd.read_csv('fcc-forum-pageviews.csv', parse_dates=['date'], index_col='date')
+df = pd.read_csv('fcc-forum-pageviews.csv',
+                 parse_dates=['date'], index_col='date')
 
-# Clean the data by filtering out days when the page views were 
+# Clean the data by filtering out days when the page views were
 # in the top 2.5% of the dataset or bottom 2.5% of the dataset.
 bottom = df['value'].quantile(0.025)
 top = df['value'].quantile(0.975)
 mask = (df['value'] > bottom) & (df['value'] < top)
 df = df[mask]
+
 
 def draw_line_plot():
     # draw and label the line plot (date as x, value as y)
@@ -26,13 +28,16 @@ def draw_line_plot():
     fig.savefig('line_plot.png')
     return fig
 
+
 def draw_bar_plot():
-    # pivot data for bar chart with years as index (primary dimension), 
+    # pivot data for bar chart with years as index (primary dimension),
     # months as columns (secondary dimension), and the average counts as the values
-    df_bar = df.pivot_table(index=df.index.year, columns=df.index.strftime('%B'), values='value', aggfunc='mean')
-    
+    df_bar = df.pivot_table(index=df.index.year, columns=df.index.strftime(
+        '%B'), values='value', aggfunc='mean')
+
     # change columns from numbers to month names
-    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    months = ['January', 'February', 'March', 'April', 'May', 'June',
+              'July', 'August', 'September', 'October', 'November', 'December']
     df_bar.columns = months
 
     # draw and label the bar plot
@@ -41,10 +46,11 @@ def draw_bar_plot():
     ax.set_xlabel('Years')
     ax.set_ylabel('Average Page Views')
     ax.legend(title='Months')
-    
+
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
+
 
 def draw_box_plot():
     # Prepare data for box plots
@@ -54,10 +60,12 @@ def draw_box_plot():
     df_box['month'] = [d.strftime('%b') for d in df_box.date]
 
     # convert the month column to Categorical so it sorts correctly
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    df_box['month'] = pd.Categorical(df_box['month'], categories=months, ordered=True)
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    df_box['month'] = pd.Categorical(
+        df_box['month'], categories=months, ordered=True)
 
-    ## Draw box plots using Seaborn (2 axes in one figure)
+    # Draw box plots using Seaborn (2 axes in one figure)
     fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(14, 6))
     sns.boxplot(data=df_box, x='year', y='value', ax=ax1)
     sns.boxplot(data=df_box, x='month', y='value', ax=ax2)
