@@ -4,7 +4,7 @@ import seaborn as sns
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
-# Import data (Make sure to parse dates. Consider setting index column to 'date'.)
+# Import data
 df = pd.read_csv('fcc-forum-pageviews.csv', parse_dates=['date'], index_col='date')
 
 # Clean the data by filtering out days when the page views were 
@@ -15,11 +15,9 @@ mask = (df['value'] > bottom) & (df['value'] < top)
 df = df[mask]
 
 def draw_line_plot():
-    # Draw line plot
+    # draw and label the line plot (date as x, value as y)
     fig, ax = plt.subplots(figsize=(14, 4))
     ax.plot(df.index, df['value'])
-    
-    # Set labels and title
     ax.set_xlabel('Date')
     ax.set_ylabel('Page Views')
     ax.set_title('Daily freeCodeCamp Forum Page Views 5/2016-12/2019')
@@ -29,7 +27,8 @@ def draw_line_plot():
     return fig
 
 def draw_bar_plot():
-    # pivot data for bar chart with years as rows and months as columns
+    # pivot data for bar chart with years as index (primary dimension), 
+    # months as columns (secondary dimension), and the average counts as the values
     df_bar = df.pivot_table(index=df.index.year, columns=df.index.strftime('%B'), values='value', aggfunc='mean')
     
     # change columns from numbers to month names
